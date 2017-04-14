@@ -1,0 +1,175 @@
+// Place all the styles related to the StaticPages controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+@import 'bootstrap-sprockets';
+@import 'bootstrap';
+
+
+
+// Gradient design
+.home-page, .navbar {
+  // Gradient from uigradients.com
+  background: #4ECDC4; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #4ECDC4 , #556270); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #4ECDC4 , #556270); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+
+
+.navbar {
+  border:none;
+}
+
+.navbar-brand {
+  font-family:"Open Sans", sans-serif;
+  font-weight:800;
+}
+
+
+.btn-warning {
+  color:white;
+  background-color: #ff9933;
+
+}
+
+// navbar links change to a lighter shade when hovering over them
+.navbar-default .navbar-brand, .navbar-default .navbar-nav > li > a{
+  color:white;
+  &:hover {
+    color:white;
+    opacity:0.75;
+  }
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+  background-color:white;
+}
+
+// Changes the navbar toggle button to white when in Mobile
+.navbar-default .navbar-toggle {
+  border:2px solid white;
+  &:hover, &:focus {
+    background-color:#4ECDC4;
+  }
+}
+
+.home-page {
+  margin-top:-20px;
+  padding-top: 50px;
+  padding-bottom: 100px;
+  color:#FFFFFF;
+}
+
+
+body {
+	background-color: #eeeeee;
+}
+
+.grid {
+	width: 100%;
+	height:100%;
+	margin: 0 auto;
+	background-color: #fff;
+	padding: 10px 50px 50px 50px;
+	border-radius: 50px;
+	border: 2px solid #cbcbcb;
+	box-shadow: 10px 15px 5px #cbcbcb;
+}
+
+// font style for financial advice after quiz is completed
+#financial-advice {
+  display: inline-block;
+  font-family: 'Source Sans Pro', sans-serif;
+  line-height: 25px;
+  font-size: 20px;
+}
+
+.grid h1 {
+	font-family: sans-serif;
+	background-color: #57636e;
+	font-size: 60px;
+	text-align: center;
+	color: #fff;
+	padding: 2px 0px;
+	border-radius: 50px;
+}
+
+.grid #question {
+	font-family: sans-serif;
+	font-size: 25px;
+	color: #5a6772;
+  margin-left:50px;
+  display:inline;
+}
+
+.buttons {
+	margin-top: 30px;
+}
+
+
+// Quiz butons and Financial topic buttons
+#btn0, #btn1, #btn2, #btn3, .btn-topics {
+	background-color: #778897;
+	width: 420px;
+	font-size:20px;
+	color:#fff;
+	border:1px solid #1d3c6a;
+	border-radius: 50px;
+	margin:10px 40px 10px 0px;
+	padding: 10px 10px;
+  margin-left:55px;
+}
+
+// Financial topic buttons for Quiz
+.btn-topics {
+  margin-left: 325px;
+}
+
+#progress {
+	color:#2b2b2b;
+	font-size: 10px;
+  margin-top: 200px;
+}
+
+#btn0:hover, #btn1:hover, #btn2:hover, #btn3:hover {
+	cursor:pointer;
+	background-color: #57636e;
+}
+
+.return-home {
+  text-align: center;
+  margin-left: 290px;
+  margin-top: 15px;
+}
+
+.return {
+  margin-left: 450px;
+  margin-top:15px;
+}
+
+.btn-warning {
+  text-align: center;
+}
+
+// Quiz trophy font
+#trophy {
+  margin-left:495px;
+}
+
+
+// title color in form
+.form-format {
+  color: black;
+}
+
+// text align in membership form
+.text-format {
+	text-align:left
+}
+
+// about and help text
+.text-paragraph {
+  margin-left: 150px;
+  margin-right: 150px;
+}
