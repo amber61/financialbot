@@ -1,0 +1,386 @@
+<% provide(:title, "Quiz") %>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Financial Literacy Quiz</title>
+	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+</head>
+<body>
+	<div class="container">
+
+		<div class="grid">
+			<div id="quiz">
+				<h1>Quiz</h1>
+				<!-- Financial Topics Page -->
+
+				<hr style="margin-top: 20px">
+				<p id="question"></p>
+				<div class="row">
+
+					<div class="buttons">
+						<div class="col-md-6">
+						<button id="btn0"><span id="choice0"></span></button>
+						</div>
+
+						<div class="col-md-6">
+						<button id="btn1"><span id="choice1"></span></button>
+						</div>
+
+						<div class="col-md-6">
+						<button id="btn2"><span id="choice2"></span></button>
+						</div>
+
+						<div class="col-md-6">
+						<button id="btn3"><span id="choice3"></span></button>
+						</div>
+
+						<%= link_to root_path, class: "btn btn-warning btn-large return-home"  do %>
+							Return Home
+						<% end %>
+					</div>
+
+					<hr style="margin-top: 50px">
+					<footer>
+						<p id="progress">Question x of y</p>
+					</footer>
+				</div>
+	  	</div> <!-- end of quiz id -->
+  	</div>
+	</div> <!-- end of container -->
+
+<!-- Javascript code for quiz -->
+<script type="text/javascript">
+
+// Quiz constructor
+
+function Quiz(questions) {
+	//displayTopics();
+	this.score = 0;
+
+	this.questions = questions;
+
+	this.questionIndex = 0;
+}
+
+
+Quiz.prototype.getQuestionIndex = function() {
+	return this.questions[this.questionIndex];
+}
+
+Quiz.prototype.isEnded = function() {
+	return this.questions.length === this.questionIndex;
+}
+
+Quiz.prototype.guess = function(answer) {
+	if (this.getQuestionIndex().correctAnswer(answer)) {
+		this.score++;
+	}
+	this.questionIndex++;
+}
+
+
+
+function Question(text, choices, answer) {
+	this.text = text;
+	this.choices = choices;
+	this.answer = answer;
+}
+
+Question.prototype.correctAnswer = function(choice) {
+	return choice === this.answer;
+
+}
+
+function populate() {
+	if(quiz.isEnded()) {
+		//showScores();
+		quizResults();
+
+	}
+	else {
+		//show question
+		var element = document.getElementById("question");
+		element.innerHTML = quiz.getQuestionIndex().text;
+
+		var choices = quiz.getQuestionIndex().choices;
+		for (var i=0;i<choices.length;i++) {
+			var element = document.getElementById("choice" + i);
+			element.innerHTML = choices[i];
+			guess("btn" + i, choices[i]);
+		}
+
+		showProgress();
+	}
+} // end of populate function
+
+function guess(id, guessChoice) {
+	var button = document.getElementById(id);
+	button.onclick = function() {
+		quiz.guess(guessChoice);
+		populate();
+	}
+}
+
+function showProgress() {
+	var currentQuestionNumber = quiz.questionIndex + 1;
+	var element = document.getElementById("progress");
+	element.innerHTML = "Question " + currentQuestionNumber +"of " + quiz.questions.length;
+}
+
+function showScores() {
+	var gameOverHtml = "<h1>Result</h1>";
+		gameOverHtml += "<h2 id='score'> Your scores: " + quiz.score+ "</h2><a href='/'><div class='btn btn-warning btn-lg return'>Return Home</div></a>";
+	var element = document.getElementById("quiz");
+	element.innerHTML = gameOverHtml;
+}
+
+var investingQuestions = [
+	new Question("If you buy a company's stock…", ["you own a part of the company", "you have lent money to the company", "you are liable for the company's debts","None of the above answers"], "you own a part of the company"),
+	new Question("If you buy a company's bond...", ["You own a part of the company","you have lent money to the company","you are liable for the company's debts","you can vote on shareholder resolutions"], "you have lent money to the company"),
+	new Question("If interest rates go down, then bond prices…", ["Go up", "Are not affected", "Go down", "Could go either way"], "Go up"),
+	new Question("Which of the following is the best definition for a junk bond?", ["A bond that is rated as below investment-grade by rating agencies", "A bond that has declined dramatically in value", "A bond that has defaulted", "A bond that is not regulated"],"A bond that is rated as below investment-grade by rating agencies"),
+	new Question("The money market is a subset of ________", ["The options market","The fixed income market","The OTC market","All of the above"], "The fixed income market"),
+	new Question("Which of the following is not true of ETFs?", ["ETF shares are regulated through creation and redemption", "Unlike mutual funds, an ETF trades like a common stock on a stock", "All of the Above","There are minimum requirements for purchasing ETFs"],"There are minimum requirements for purchasing ETFs"),
+	new Question("A company wishing to issue a stock option plan must first", ["Obtain written permission from the SEC", "Get shareholder approval", "Have a market cap of at least 10$ million", "None of the above"], "Get shareholder approval"),
+	new Question("What happens when an investor over-diversifies?", ["They are spread too thin","They make more money","They drive their money manager crazy","They create high-risk scenerios"], "They are spread too thin"),
+	new Question("What is implied volatility?", ["A risk probability equation","A measure of how risk could occur","A calculation that compares the current market price and theoretical future value","Something that only impacts option writers"], "A calculation that compares the current market price and theoretical future value"),
+	new Question("What is the best course of action when faced with two stocks, one gaining value, the other losing value?", ["Sell the losing stock and hold onto the winning stock","Decide how to proceed based on your gut instincts"," Become a deer in the headlights and do nothing","Sell the winning stock, take the profit, and wait for the losing stock to regain its value"], "Sell the losing stock and hold onto the winning stock"),
+
+];
+
+var debtQuestions = [
+	new Question("Which of the following is NOT a likely benefit of consolidating your loans?", ["It will get you a lower interest rate", "It will get you out of debt faster", "It will simplify your debt payments","None of the above"], "It will get you out of debt faster"),
+	new Question("Which of the following would be considered good debt?", ["Credit card debt","Cash advance loan","A mortgage","Student loans"], "A mortgage"),
+	new Question("Which of the following should be considered a last resort to debt problems?", ["Bankruptcy", "Debt settlement", "debt consolidation loan", "None of the above"], "Bankruptcy"),
+	new Question("What is the maximum number of years bankruptcy can stay on your credit report?", ["Three years", "Five years", "Seven years", "Ten years"], "Ten years"),
+	new Question("Your creditors can sue you if you have debts such as:", ["Income tax and VAT", "Personal loans", "Credit card debt", "All of the above"], "Income tax and VAT"),
+	new Question("If you have a revolving credit account, credit card companies prefer that you:", ["pay your entire balance every month", "pay most of your balance off every month", "pay only the minimum payment to them every month", "None of the above"], "pay only the minimum payment to them every month"),
+	new Question("What does it mean for debt to be unsecured?", ["debt under a consolidation loan", "debt that a company believes is unlikely to be paid back", "None of the above", "debt not backed by collateral"], "debt not backed by collateral"),
+	new Question("Debt reduction involves measures such as:", ["Skipping loan payments", "Prioritizing debts", "Paying low-interest debts first", "Investing money before paying debt"], "Prioritizing debts"),
+	new Question("A _____ is an example of exempt property during bankruptcy:", ["Bank account", "Retirement account", "Cash", "None of the above"], "Retirement account"),
+	new Question("A student loan is considered a type of:", ["Non-priority debt", "Secured debt", "Priority debt", "None of the above"], "Non-priority debt"),
+
+
+];
+
+var creditQuestions = [
+	new Question("A _____ is an example of installment credit:", ["Student loan", "Line of credit", "Secured credit card", "All of the above"], "Line of credit"),
+	new Question("A gas credit card is ideal for:", ["Everyone", "Business owners", "Frequent travelers", "None of the above"], "Frequent travelers"),
+	new Question("Which of the following is not a way to improve your credit score?", ["Request a credit line increase", "Dispute errors", "Use multiple credit cards", "All of the above"], "Use multiple credit cards"),
+	new Question("What does open credit mean?", ["Making partial payments", "The amount is due in full on a monthly basis", "It is a type of installment credit", "All of the above"], "The amount is due in full on a monthly basis"),
+	new Question("Creditors are not allowed to:", ["Sue borrowers in court", "Call borrowers after 10 pm", "Sell debt", "All of the above"], "Call borrowers after 10 pm"),
+	new Question("What does equity credit refer to?", ["A revolving credit", "A bridge loan", "None of the above", "A second mortgage"], "A second mortgage"),
+	new Question("Secured credit cards require:", ["High income", "A deposit", "All of the above", "A high credit score"], "A deposit"),
+	new Question("A mortgage is a type of:", ["Unsecured credit", "Secured credit", "Revolving credit", "None of the above"], "Secured credit"),
+	new Question("The following are examples of a credit line, except:", ["Student loan", "Home loan", "Term loan", "Demand loan"], "Home loan"),
+	new Question("Which of the following is not a credit account?", ["Retirement credit account", "Secure credit", "An equity credit account", "A money market account"], "A money market account"),
+
+];
+
+var loanQuestions = [
+	new Question("The best place to find a low-interest loan is:", ["Your credit union", "An investment bank", "A private bank", "Borrowing program"], "Your credit union"),
+	new Question("What is a working capital loan?", ["A business line of credit to secure capital", "A loan that secures capital", "A real estate loan", "None of the above"], "A loan that secures capital"),
+	new Question("A no credit personal loan is one for which:", ["No credit means low interest", "The application period takes longer", "Credit check is not required", "None of the above"], "Credit check is not required"),
+	new Question("Which of the following is not a conventional loan?", ["A consolidation loan", "An auto loan", "A personal loan", "None of the above"], "A consolidation loan"),
+	new Question("Which of the items below is not an unsecured loan?", ["A peer to peer loans", "A home equity loan", "A signature loan", "All of the above"], "A home equity loan"),
+	new Question("Professional loans are offered to:", ["Students", "Associations", "Everyone", "Doctors and lawyers"], "Doctors and lawyers"),
+	new Question("A loan deferment is a _______ of payments for special reasons.", ["cancellation", "acceleration", "differentiation", "suspension"], "suspension"),
+	new Question("If you have bad credit, to get a loan you may need:", [" A loan that isn’t credit based", " An alternative loan with a higher interest rate", "Cosigner", "Any or all of the above"], "Any or all of the above"),
+	new Question("What is a benefit of federal loans?", ["High interest rates", "No limit on amount borrowed", "Often subsidized and grace period before repayment", "You can pay them with your tax refund"], "Often subsidized and grace period before repayment"),
+	new Question("Alternative student loans are:", ["Education loans from private lenders", "Always better than federal loans", "Made only for liberal arts students", "Available for only vocational training"], "Always better than federal loans"),
+
+];
+var topics = "<h1>Financial Literacy Quiz</h1>";
+topics += "<h2>Please choose a financial topic</h2>";
+//topics += "</ br>";
+topics += "<div id='investingQuiz' class='btn btn-topics' onclick='getQuiz()'>Investing</div>";
+topics += "<div id='debtQuiz' class='btn btn-topics' onclick='getQuiz()'>Debt</div>";
+topics += "<div id='creditQuiz'class='btn btn-topics' onclick='getQuiz()'>Credit</div>";
+topics += "<div id='loanQuiz'class='btn btn-topics' onclick='getQuiz()'>Loans</div>";
+var element = document.getElementById("quiz");
+element.innerHTML = topics;
+
+var investingTopic = document.getElementById("investingQuiz");
+var debtTopic = document.getElementById("debtQuiz");
+var creditTopic = document.getElementById("creditQuiz");
+var loanTopic = document.getElementById("loanQuiz");
+
+var quizNum = 0;
+
+
+				investingTopic.onclick = function() {
+					quizNum = 1;
+					getQuiz();
+
+				}
+				debtTopic.onclick = function() {
+					quizNum = 2;
+					getQuiz();
+				}
+
+				creditTopic.onclick = function() {
+					quizNum = 3;
+					getQuiz();
+				}
+
+				loanTopic.onclick = function() {
+					quizNum = 4;
+					getQuiz();
+				}
+
+
+
+function getQuiz() {
+
+	var quizzes = "<h1>Financial Literacy Quiz</h1>";
+	  quizzes += "<hr style='margin-top: 20px'><p id='question'></p><div class='row'>";
+		quizzes += "<div class='buttons'><div class='col-md-6'><button id='btn0'><span id='choice0'></span></button></div>";
+		quizzes += "<div class='buttons'><div class='col-md-6'><button id='btn1'><span id='choice1'></span></button></div>";
+		quizzes += "<div class='buttons'><div class='col-md-6'><button id='btn2'><span id='choice2'></span></button></div>";
+		quizzes += "<div class='buttons'><div class='col-md-6'><button id='btn3'><span id='choice3'></span></button></div></div>";
+		quizzes += "<hr style='margin-top: 50px'><footer><p id='progress'>Question x of y</p></footer>";
+		quizzes += "</div>";
+		var element = document.getElementById("quiz");
+		element.innerHTML = quizzes;
+
+	if (quizNum === 1) {
+		quiz = new Quiz(investingQuestions);
+	}
+	else if (quizNum === 2) {
+		quiz = new Quiz(debtQuestions);
+
+	}
+
+	else if (quizNum === 3) {
+		quiz = new Quiz(creditQuestions);
+	}
+
+	else if (quizNum === 4) {
+		quiz = new Quiz(loanQuestions);
+	}
+	populate();
+}
+
+
+function quizResults() {
+	if (quizNum === 1) {
+		investingQuizResult();
+	}
+
+	else if (quizNum === 2) {
+		debtQuizResult();
+	}
+
+	else if (quizNum === 3) {
+		creditQuizResult();
+	}
+
+	else if (quizNum === 4) {
+		loanQuizResult();
+	}
+}
+
+
+function investingQuizResult() {
+	var result ="<h1>Result</h1>";
+	if (quiz.score >= 0 && quiz.score < 5) {
+		 result += "<h2 id='score'> Your score: " + quiz.score + "</h2><i id='trophy' class='fa fa-window-close fa-5x' aria-hidden='true'></i><h3>Your investing knowledge is non-existent. The best thing you can invest in right now is an education.This might help</h3>";
+	}
+
+	else if (quiz.score >= 5 && quiz.score <8) {
+		 result += "<h2 id='score'> Your score: " + quiz.score + "</h2><i id='trophy' class='fa fa-trophy fa-5x' aria-hidden='true'></i><h3>Congrats! You know a little bit about investing. Here's some information that can further your knowledge.</h3>";
+	}
+	else if (quiz.score >= 8) {
+		result += "<h2 id='score'> Your score: " + quiz.score + "</h2><i id='trophy' class='fa fa-trophy fa-5x' aria-hidden='true'></i><h3>Great job you know your stuff!</h3>";
+	}
+
+	result += "<div><br /></div>";
+	result += "<p id='financial-advice'>Investing(n-vsting) <br /> <i>The act of committing money or capital to an endeavor with the expectation of obtaining an additional income or profit.</i></p>";
+	result += "<p id='financial-advice'>It's actually pretty simple: investing means putting your money to work for you. Essentially, it's a different way to think about how to make money. Growing up, most of us were taught that you can earn an income only by getting a job and working. And that's exactly what most of us do. There's one big problem with this: if you want more money, you have to work more hours. However, there is a limit to how many hours a day we can work, not to mention the fact that having a bunch of money is no fun if we don't have the leisure time to enjoy it</p>";
+	result += "<p id='financial-advice'>You can't create a duplicate of yourself to increase your working time, so instead, you need to send an extension of yourself - your money - to work. That way, while you are putting in hours for your employer, or even mowing your lawn, sleeping, reading the paper or socializing with friends, you can also be earning money elsewhere. Quite simply, making your money work for you maximizes your earning potential whether or not you receive a raise, decide to work overtime or look for a higher-paying job.</p>";
+	result += "<p id='financial-advice'>There are many different ways you can go about making an investment. This includes putting money into <a href='http://www.investopedia.com/terms/s/stock.asp'>stocks, </a><a href='http://www.investopedia.com/terms/b/bond.asp'>bonds, </a><a href='http://www.investopedia.com/terms/m/mutualfund.asp'>mutual funds, </a> or real estate (among many other things), or starting your own business. Sometimes people refer to these options as <q>investment vehicles</q>, which is just another way of saying <q>a way to invest.</q> Each of these vehicles has positives and negatives, which we'll discuss in a later section of this tutorial. The point is that it doesn't matter which method you choose for investing your money, the goal is always to put your money to work so it earns you an additional profit. Even though this is a simple idea, it's the most important concept for you to understand.</p>";
+
+	result += "<a href='/'><div class='btn btn-warning btn-lg return'>Return Home</div></a>";
+	element.innerHTML = result;
+
+}
+
+
+function debtQuizResult() {
+	var result ="<h1>Result</h1>";
+	if (quiz.score >= 0 && quiz.score < 5) {
+		 result += "<h2 id='score'> Your score: " + quiz.score + "</h2><i id='trophy' class='fa fa-window-close fa-5x' aria-hidden='true'></i><h3>Nice try. Here's some information about debt that should help improve your score.</h3>";
+	}
+
+	else if (quiz.score >= 5 && quiz.score <8) {
+		 result += "<h2 id='score'> Your score: " + quiz.score + "</h2><i id='trophy' class='fa fa-trophy fa-5x' aria-hidden='true'></i><h3>Good work. Read below for additional information on debt.</h3>";
+	}
+	else if (quiz.score >= 8) {
+		result += "<h2 id='score'> Your score: " + quiz.score + "</h2><i id='trophy' class='fa fa-trophy fa-5x' aria-hidden='true'></i><h3>You must be debt free with all the knowledge you have! Great work. Here's some more information about debt that could definitely help you.</h3>";
+	}
+
+	result += "<div><br /></div>";
+	result += "<p id='financial-advice'>Debt is an amount of money borrowed by one party from another. Debt is used by many corporations and individuals as a method of making large purchases that they could not afford under normal circumstances. A debt arrangement gives the borrowing party permission to borrow money under the condition that it is to be paid back at a later date, usually with interest.</p>";
+	result += "<p id='financial-advice'>The most common forms of debt are loans, including <a href='http://www.investopedia.com/terms/m/mortgage.asp'>mortgages</a> and auto loans, and <a href='http://www.investopedia.com/terms/c/credit-card-debt.asp'>credit card debt</a>. Under the terms of a loan, the borrower is required to repay the balance of the loan by a certain date, typically several years in the future. The terms of the loan also stipulate the amount of interest that the borrower is required to pay annually, expressed as a percentage of the loan amount. Interest is used as a way to ensure that the lender is compensated for taking on the risk of the loan while also encouraging the borrower to repay the loan quickly in order to limit his total <a href='http://www.investopedia.com/terms/i/interestexpense.asp'>interest expense</a>.</p>";
+	result += "<p id='financial-advice'>n corporate finance, there is a lot of attention paid to the amount of debt a company has. A company that has a large amount of debt may not be able to make its interest payments if sales drop, putting the business in danger of <a href='http://www.investopedia.com/terms/b/bankruptcy.asp'>bankruptcy</a>. Conversely, a company that uses no debt may be missing out on important expansion opportunities.</p>";
+	result += "<p id='financial-advice'>Different industries use debt differently, so the right amount of debt varies from business to business. When assessing the financial standing of a give company, therefore, various metrics are used to determine if the level of debt, or leverage, the company uses to fund operations is within a healthy range.</p>";
+
+	result += "<a href='/'><div class='btn btn-warning btn-lg return'>Return Home</div></a>";
+	element.innerHTML = result;
+}
+
+function creditQuizResult() {
+	var result ="<h1>Result</h1>";
+	if (quiz.score >= 0 && quiz.score < 5) {
+		 result += "<h2 id='score'> Your score: " + quiz.score + "</h2><i id='trophy' class='fa fa-window-close fa-5x' aria-hidden='true'></i><h3>Nice try. Here's some information that could improve your understanding of credit.</h3>";
+	}
+
+	else if (quiz.score >= 5 && quiz.score <8) {
+		 result += "<h2 id='score'> Your score: " + quiz.score + "</h2><i id='trophy' class='fa fa-trophy fa-5x' aria-hidden='true'></i><h3>Good work. Here's information on how you can improve your credit score.</h3>";
+	}
+	else if (quiz.score >= 8) {
+		result += "<h2 id='score'> Your score: " + quiz.score + "</h2><i id='trophy' class='fa fa-trophy fa-5x' aria-hidden='true'></i><h3>Woah Great job! You must have a high credit score! Here's additional credit information</h3>";
+	}
+
+	result += "<div><br /></div>";
+	result += "<h3>Check the Credit Report</h3><p id='financial-advice'>Your credit score (often referred to as your FICO score) provides a snapshot of your credit status. It's determined by a variety of factors that can be broken down into the following categories:<br /><ul><li><strong style='font-size: 17px'>Credit History</strong> – <p id='financial-advice'>How long have you been using credit?</p></li><li><strong style='font-size: 17px'>Payment History</strong> – <p id='financial-advice'>Do you have a history of paying on time?</p></li><li><strong style='font-size: 17px'>Credit Amount</strong> – <p id='financial-advice'>How much do you make and how much do you owe?</p></li></ul></p>";
+	result += "<p id='financial-advice'>Check over your credit report with a fine-toothed comb: Verify that the amount you owe on each account is accurate. And look for any accounts you paid off that still show as outstanding. If something seems incorrect or you are not sure of any items, then it is your right to contact the credit agency in writing and ask them to investigate the issue and make an amendment.</p>";
+	result += "<p id='financial-advice'>Once you know what you have to work with, make sure that all of your accounts are current, and up to date. Were you a little tardy paying that MasterCard bill last month? Well, this will go on your credit report and lower your credit rating. The longer and more often you do not make bill payments on time, the lower your credit rating will become.</p>";
+	result += "<p id='financial-advice'>The number of credit accounts you have open is also important to control. Credit cards are easy to open. Almost every store has a quick, convenient way to get you a new card. Attractive incentives, such as big discounts on purchases the day you sign up, add to the temptation. If you shop in that store often, it may be worth getting its card; otherwise, resist the urge.</p>";
+	result += "<p id='financial-advice'>A good idea would be to keep three to four credit card accounts open, but only use one or two of them; put away or cut up the others. Once you have paid off a card, though, keep the account open, even if you don’t want to use it anymore. Closing a credit card will lower your credit score, even if you always paid it on time and did not have a balance. If you desire to close a card due to its high annual fees, try calling the credit card company and ask them for a downgrade to one of their free cards. This allows you to maintain a longer history with the company, which is important for a healthy credit score.</p>";
+
+
+	result += "<a href='/'><div class='btn btn-warning btn-lg return'>Return Home</div></a>";
+	element.innerHTML = result;
+}
+
+function loanQuizResult() {
+	var result ="<h1>Result</h1>";
+	if (quiz.score >= 0 && quiz.score < 5) {
+		 result += "<h2 id='score'> Your score: " + quiz.score + "</h2><i id='trophy' class='fa fa-window-close fa-5x' aria-hidden='true'></i><h3>Nice try. Here's some information that could improve your understanding of how loans work.</h3>";
+	}
+
+	else if (quiz.score >= 5 && quiz.score <8) {
+		 result += "<h2 id='score'> Your score: " + quiz.score + "</h2><i id='trophy' class='fa fa-trophy fa-5x' aria-hidden='true'></i><h3>Good work. Here's information on how you can improve your chances of getting a loan.</h3>";
+	}
+	else if (quiz.score >= 8) {
+		result += "<h2 id='score'> Your score: " + quiz.score + "</h2><i id='trophy' class='fa fa-trophy fa-5x' aria-hidden='true'></i><h3>Great Job! You know your stuff. Here's some additional information about loans.</h3>";
+	}
+	result += "<div><br /></div>";
+	result += "<p id='financial-advice'>Before you think about borrowing for college via a private loan, you always want to exhaust your federal loan availability first. This is because federal loans normally have lower, fixed interest rates, no <a href='http://www.investopedia.com/terms/c/co_sign.asp'>cosigner</a> requirement and better repayment terms – especially if you hit a financial rut while trying to repay your loans. Additionally, the approval process isn't based on an applicant's <a href='http://www.investopedia.com/terms/c/creditrating.asp'>credit rating</a>; good news for young borrowers with little or no credit history </p>";
+	result += "<p id='financial-advice'>An unsecured loan is a loan that is issued and supported only by the borrower's creditworthiness, rather than by any type of collateral. An unsecured loan is one that is obtained without the use of property as collateral for the loan, and it is also called a signature loan or a personal loan. Borrowers generally must have high credit ratings to be approved for certain unsecured loans.</p>";
+	result += "<p id='financial-advice'>A type of loan associated with subprime lending and borrowers with a tainted credit history. Second chance loans offer a borrower a chance to rebuild their credit history. Although subprime loans might have a typical term-to-maturity (30 years of a mortgage), they are usually intended to be short-term financing vehicles that allow the borrower to repair their credit history to the point where they can refinance into more favorable loan terms. Borrowers must compensate the lender for taking on more risk in lending to them by paying a higher interest rate, thus the incentive for the borrower to refinance as soon as they are able.</p>";
+
+	result += "<a href='/'><div class='btn btn-warning btn-lg return'>Return Home</div></a>";
+	element.innerHTML = result;
+}
+
+
+//var quiz = new Quiz(debtQuestions);
+
+//populate();
+
+
+    </script>
+	</body>
+</html>
